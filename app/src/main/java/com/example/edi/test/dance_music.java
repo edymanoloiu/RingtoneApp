@@ -92,15 +92,19 @@ public class dance_music extends ListActivity {
                             String selectedSongTitle = String.valueOf(mChatListView.getItemAtPosition(position));
                             String randomName = selectedSongTitle + r.nextInt(2015);
 
-                            //write song on to the sdcard or internal memory
+                            //write internal memory
                             File newSoundFile;
                             String directoryName;
                             directoryName = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-                            newSoundFile = new File(directoryName, randomName + ".mp3");
+                            //delete the song if it exists
+                            File[] files = new File(directoryName).listFiles();
+                            for (File file : files) {
+                                if (file.isFile() && file.getName().startsWith(selectedSongTitle) && !file.getName().equals(randomName))
+                                    file.delete();
+                            }
 
-                            if (newSoundFile.exists())
-                                newSoundFile.delete();
+                            newSoundFile = new File(directoryName, randomName + ".mp3");
 
                             Uri mUri = Uri.parse("android.resource://com.example.edi.test/" + songsIDs.get(songEquivalent.get(selectedSongTitle)));
                             ContentResolver mCr = getContentResolver();
