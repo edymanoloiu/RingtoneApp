@@ -94,28 +94,15 @@ public class dance_music extends ListActivity {
 
                             //write song on to the sdcard or internal memory
                             File newSoundFile;
-                            File ringtonesDirectory;
                             String directoryName;
-                            if (Environment.getExternalStorageState() == null) {
-                                directoryName = Environment.getDataDirectory().getPath() + "/RingtonesApp/";
-                                ringtonesDirectory = new File(directoryName);
-                                //create directory if it doesn't exist
-                                if (!ringtonesDirectory.exists())
-                                    ringtonesDirectory.mkdir();
-                                newSoundFile = new File(directoryName, randomName + ".mp3");
-                            } else {
-                                directoryName = Environment.getExternalStorageDirectory().getPath() + "/RingtonesApp/";
-                                ringtonesDirectory = new File(directoryName);
-                                //create directory if it doesn't exist
-                                if (!ringtonesDirectory.exists())
-                                    ringtonesDirectory.mkdir();
-                                newSoundFile = new File(directoryName, randomName + ".mp3");
-                            }
+                            directoryName = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+                            newSoundFile = new File(directoryName, randomName + ".mp3");
 
                             if (newSoundFile.exists())
                                 newSoundFile.delete();
 
-                            Uri mUri = Uri.parse("android.resource://com.example.edi.test/" + songsIDs.get(selectedSongTitle));
+                            Uri mUri = Uri.parse("android.resource://com.example.edi.test/" + songsIDs.get(songEquivalent.get(selectedSongTitle)));
                             ContentResolver mCr = getContentResolver();
                             AssetFileDescriptor soundFile;
                             try {
@@ -135,6 +122,7 @@ public class dance_music extends ListActivity {
                                     i = fis.read(readData);
                                 }
                                 fos.close();
+                                fis.close();
                             } catch (IOException io) {
                             }
 
@@ -149,6 +137,10 @@ public class dance_music extends ListActivity {
                             values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
                             values.put(MediaStore.Audio.Media.IS_ALARM, false);
                             values.put(MediaStore.Audio.Media.IS_MUSIC, true);
+
+                            //File file = new File(newSoundFile.getPath());
+                            //if (file.exists())
+                            //   Toast.makeText(getListView().getContext(), newSoundFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 
                             //Insert it into the database
                             Uri uri = MediaStore.Audio.Media.getContentUriForPath(newSoundFile.getAbsolutePath());
